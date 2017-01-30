@@ -11,7 +11,7 @@ app.launch(function(req, res) {
 
 app.intent('startReading', {
         'slots': {
-            'READINGDATE': 'text'
+            'READINGDATE': 'AMAZON.DATE'
         },
         'utterances': ['{|start reading|read} {|daily bread} {|for} {-|READINGDATE}']
     }, function (req, res) {
@@ -19,8 +19,7 @@ app.intent('startReading', {
         const odb = new ODB();
         const audioData = odb.getAudioData(readingDate);
         const prompt = 'Start reading Our Daily Bread for ' + audioData.title;
-        res.say(prompt).send();
-        res.audioPlayerPlay('REPLACE_ALL', audioData.url)
+        res.say(prompt).audioPlayerPlay('REPLACE_ALL', audioData.url).send();
         return true;
     }
 );

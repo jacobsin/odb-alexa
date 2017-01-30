@@ -19,7 +19,7 @@ describe('ODB', function () {
             it('returns url for today', function () {
                 const data = odb.getAudioData();
                 expect(data.title).to.eq('January 28th');
-                expect(data.url).to.eq('http://cdn.rbcintl.org/odb/zhy/zhy-odb-2017-01-28.mp3');
+                expect(data.url).to.eq('https://cdn.rbcintl.org/odb/zhy/zhy-odb-2017-01-28.mp3');
             });
 
             after(function () {
