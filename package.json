@@ -1,7 +1,7 @@
 {
   "name": "odb-alexa",
   "version": "1.0.0",
-  "description": "",
+  "description": "our daily bread reading skill for alexa",
   "main": "index.js",
   "scripts": {
     "test": "mocha"
