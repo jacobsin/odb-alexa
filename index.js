@@ -48,6 +48,19 @@ app.intent('AMAZON.ResumeIntent', function (req, res) {
     }
 });
 
+const sayGoodbye = function(req, res) {
+    res.say('Goodbye!');
+};
+
+app.intent('AMAZON.StopIntent', sayGoodbye);
+app.intent('AMAZON.CancelIntent', sayGoodbye);
+
+app.intent('AMAZON.HelpIntent', function(req, res) {
+    const help = 'To start reading daily devotional from Our Daily Bread, request it by telling a date.' +
+        'For example, to start reading for today, say start reading for today';
+    res.say(help);
+});
+
 //hack to support custom utterances in utterance expansion string
 var utterancesMethod = app.utterances;
 app.utterances = function () {
