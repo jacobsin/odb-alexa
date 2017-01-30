@@ -9,20 +9,31 @@ app.launch(function(req, res) {
     res.say(prompt).reprompt(prompt).shouldEndSession(false);
 });
 
-app.intent('startReading', {
+app.intent('StartReading', {
         'slots': {
-            'READINGDATE': 'AMAZON.DATE'
+            'Date': 'AMAZON.DATE'
         },
-        'utterances': ['{|start reading|read} {|daily bread} {|for} {-|READINGDATE}']
+        'utterances': ['{|start reading|read} {|daily bread} {|for} {-|Date}']
     }, function (req, res) {
-        var readingDate = req.slot('READINGDATE');
+        var date = req.slot('Date');
         const odb = new ODB();
-        const audioData = odb.getAudioData(readingDate);
+        const audioData = odb.getAudioData(date);
         const prompt = 'Start reading Our Daily Bread for ' + audioData.title;
-        res.say(prompt).audioPlayerPlay('REPLACE_ALL', audioData.url).send();
-        return true;
+        res.say(prompt).audioPlayerPlayStream('REPLACE_ALL', {
+            token: audioData.token,
+            url : audioData.url,
+            offsetInMilliseconds: 0
+        });
     }
 );
+
+app.intent('AMAZON.PauseIntent', function(req, res) {
+    res.audioPlayerStop();
+});
+
+app.intent('AMAZON.ResumeIntent', function(req, res) {
+    res.audioPlayerPlayStream();
+});
 
 //hack to support custom utterances in utterance expansion string
 var utterancesMethod = app.utterances;
