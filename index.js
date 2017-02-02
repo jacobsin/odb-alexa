@@ -7,7 +7,7 @@ const ODB = require('./lib/odb');
 // app.error = console.error;
 
 app.launch(function (req, res) {
-    const prompt = 'For reading daily devotional from Our Daily Bread. Tell me a date to start reading.';
+    const prompt = 'For reading daily devotional from Our Daily Bread. What date do you want me to read?';
     res.say(prompt).reprompt(prompt).shouldEndSession(false);
 });
 
@@ -20,12 +20,17 @@ app.intent('StartReading', {
         const date = req.slot('Date');
         const odb = new ODB();
         const audioData = odb.getAudioData(date);
-        const prompt = 'Start reading Our Daily Bread for ' + audioData.title;
-        res.say(prompt).audioPlayerPlayStream('REPLACE_ALL', {
-            token: audioData.url,
-            url: audioData.url,
-            offsetInMilliseconds: 0
-        });
+        if (audioData.title === 'Invalid date') {
+            const prompt = 'I didn\'t hear a valid date. Tell me a date.';
+            res.say(prompt).reprompt(prompt).shouldEndSession(false);
+        } else {
+            const prompt = 'Start reading Our Daily Bread for ' + audioData.title;
+            res.say(prompt).audioPlayerPlayStream('REPLACE_ALL', {
+                token: audioData.url,
+                url: audioData.url,
+                offsetInMilliseconds: 0
+            });
+        }
     }
 );
 
@@ -56,9 +61,8 @@ app.intent('AMAZON.StopIntent', sayGoodbye);
 app.intent('AMAZON.CancelIntent', sayGoodbye);
 
 app.intent('AMAZON.HelpIntent', function(req, res) {
-    const help = 'To start reading daily devotional from Our Daily Bread, request it by telling a date.' +
-        'For example, to start reading for today, say start reading for today';
-    res.say(help);
+    const help = 'For reading daily devotional from Our Daily Bread. What date do you want me to read?';
+    res.say(help).reprompt(help).shouldEndSession(false);
 });
 
 //hack to support custom utterances in utterance expansion string
